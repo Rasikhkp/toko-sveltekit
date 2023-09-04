@@ -1,7 +1,10 @@
 <script>
+	import { fly } from 'svelte/transition';
 	import JumlahPesanan from './jumlah-pesanan.svelte';
 
 	export let namaProduk, kategori, harga, gambarProduk;
+
+	let tooltip = false;
 </script>
 
 <div class="py-5 bg-white shadow-[0_0_0_1px] shadow-gray-300">
@@ -14,9 +17,21 @@
 
 	<div class="flex w-40 gap-2 mx-auto mt-3">
 		<JumlahPesanan />
+		<!-- svelte-ignore a11y-mouse-events-have-key-events -->
 		<button
-			class="w-10 h-11 flex justify-center items-center hover:bg-[#9cad57] rounded bg-[#96B416]"
+			on:mouseover={() => (tooltip = true)}
+			on:mouseleave={() => (tooltip = false)}
+			class="w-10 relative h-11 flex justify-center items-center hover:bg-[#9cad57] rounded bg-[#96B416]"
 		>
+			{#if tooltip}
+				<!-- content here -->
+				<div
+					transition:fly={{ y: 10, duration: 100 }}
+					class="absolute px-5 py-1 text-sm text-black bg-white rounded drop-shadow-lg -top-14"
+				>
+					{namaProduk}
+				</div>
+			{/if}
 			<svg
 				width="23px"
 				height="23px"

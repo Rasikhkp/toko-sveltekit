@@ -1,6 +1,7 @@
 <script>
 	import Product from '../lib/product.svelte';
-	// let;
+	import { fly } from 'svelte/transition';
+	let cart = false;
 </script>
 
 <svelte:head>
@@ -13,6 +14,44 @@
 		}
 	</style>
 </svelte:head>
+{#if cart}
+	<!-- content here -->
+	<div transition:fly={{ y: -100, duration: 500 }}>
+		<div class="h-[calc(100vh-100px)] w-[600px] bg-slate-400 absolute z-10" />
+		<button
+			on:click={() => (cart = false)}
+			class="absolute p-3 mt-10 rounded-full hover:bg-slate-400 bottom-10 bg-slate-300"
+		>
+			<svg
+				width="20px"
+				height="20px"
+				viewBox="-0.5 0 25 25"
+				fill="none"
+				xmlns="http://www.w3.org/2000/svg"
+				><g id="SVGRepo_bgCarrier" stroke-width="0" /><g
+					id="SVGRepo_tracerCarrier"
+					stroke-linecap="round"
+					stroke-linejoin="round"
+				/><g id="SVGRepo_iconCarrier">
+					<path
+						d="M3 21.32L21 3.32001"
+						stroke="#000000"
+						stroke-width="1.5"
+						stroke-linecap="round"
+						stroke-linejoin="round"
+					/>
+					<path
+						d="M3 3.32001L21 21.32"
+						stroke="#000000"
+						stroke-width="1.5"
+						stroke-linecap="round"
+						stroke-linejoin="round"
+					/>
+				</g></svg
+			>
+		</button>
+	</div>
+{/if}
 
 <div class="w-[600px]">
 	<nav class="flex justify-between p-5 h-[62px] items-center bg-[#96B416] gap-5">
@@ -44,7 +83,7 @@
 			>
 		</div>
 		<div class="flex items-center justify-center gap-7">
-			<div>
+			<button on:click={() => (cart = true)}>
 				<svg
 					width="23px"
 					height="23px"
@@ -65,7 +104,7 @@
 						/>
 					</g></svg
 				>
-			</div>
+			</button>
 			<div>
 				<svg
 					width="23px"
@@ -101,7 +140,7 @@
 			class="grid grid-cols-2 gap-[1px] mx-5 overflow-hidden shadow-[0_0_0_1px] shadow-gray-300 rounded-lg"
 		>
 			<Product
-				namaProduk="Tempe Goreng"
+				namaProduk="Ayam Geprek"
 				gambarProduk="makanan1.jpg"
 				harga="Rp30.000"
 				kategori="Makanan"
