@@ -1,7 +1,24 @@
 <script>
-	import Product from '../lib/product.svelte';
 	import { fly } from 'svelte/transition';
+	import { backOut } from 'svelte/easing';
+	import Product from '../lib/product.svelte';
+	import ProductIncart from '../lib/product-incart.svelte';
 	let cart = false;
+	let productInTheCart = true;
+
+	function cartInOut(node, { duration = 100 }) {
+		return {
+			duration,
+			easing: backOut,
+			css: (t) => {
+				let kebawah = 1 - t;
+
+				return `
+					transform: translateY(-${kebawah * 700}px)
+					`;
+			}
+		};
+	}
 </script>
 
 <svelte:head>
@@ -12,20 +29,33 @@
 			-webkit-appearance: none;
 			margin: 0;
 		}
+		/* width */
+		::-webkit-scrollbar {
+			width: 5px;
+		}
+
+		/* Handle */
+		::-webkit-scrollbar-thumb {
+			background: #96b416;
+			border-radius: 10px;
+		}
+
+		/* Handle on hover */
+		::-webkit-scrollbar-thumb:hover {
+			background: #7a9111;
+		}
 	</style>
 </svelte:head>
+
 {#if cart}
 	<!-- content here -->
-	<div transition:fly={{ y: -100, duration: 500 }}>
-		<div class="h-[calc(100vh-100px)] w-[600px] bg-slate-400 absolute z-10" />
-		<button
-			on:click={() => (cart = false)}
-			class="absolute p-3 mt-10 rounded-full hover:bg-slate-400 bottom-10 bg-slate-300"
-		>
+	<div class="relative z-10 h-screen bg-yellow-300 w-fit" in:cartInOut out:cartInOut>
+		<div class="h-[calc(100vh-100px)] p-10 w-[600px] bg-white drop-shadow-lg rounded-b-xl fixed">
 			<svg
-				width="20px"
-				height="20px"
-				viewBox="-0.5 0 25 25"
+				class="mx-auto"
+				width="30px"
+				height="30px"
+				viewBox="0 0 24 24"
 				fill="none"
 				xmlns="http://www.w3.org/2000/svg"
 				><g id="SVGRepo_bgCarrier" stroke-width="0" /><g
@@ -34,22 +64,79 @@
 					stroke-linejoin="round"
 				/><g id="SVGRepo_iconCarrier">
 					<path
-						d="M3 21.32L21 3.32001"
+						d="M20.2236 12.5257C19.6384 9.40452 19.3458 7.84393 18.2349 6.92196C17.124 6 15.5362 6 12.3606 6H11.6394C8.46386 6 6.87608 6 5.76518 6.92196C4.65428 7.84393 4.36167 9.40452 3.77645 12.5257C2.95353 16.9146 2.54207 19.1091 3.74169 20.5545C4.94131 22 7.17402 22 11.6394 22H12.3606C16.826 22 19.0587 22 20.2584 20.5545C20.9543 19.7159 21.108 18.6252 20.9537 17"
 						stroke="#000000"
 						stroke-width="1.5"
 						stroke-linecap="round"
-						stroke-linejoin="round"
 					/>
 					<path
-						d="M3 3.32001L21 21.32"
+						d="M9 6V5C9 3.34315 10.3431 2 12 2C13.6569 2 15 3.34315 15 5V6"
 						stroke="#000000"
 						stroke-width="1.5"
 						stroke-linecap="round"
-						stroke-linejoin="round"
 					/>
 				</g></svg
 			>
-		</button>
+			<p class="mt-2 text-lg text-center">SHOPPING CART</p>
+
+			{#if productInTheCart}
+				<!-- content here -->
+				<div class="w-full px-6 py-3 mt-5 overflow-y-scroll border rounded-lg overscroll-none h-72">
+					<ProductIncart />
+					<ProductIncart />
+					<ProductIncart />
+					<ProductIncart />
+					<ProductIncart />
+					<ProductIncart />
+				</div>
+				<div class="w-full px-10 mt-10">
+					<div class="flex justify-between font-bold">
+						<p>Total</p>
+						<p>Rp120.000</p>
+					</div>
+					<button
+						class="w-full py-3 text-center rounded-lg bg-[#96B416] font-bold text-white mt-5 hover:bg-[#7a9111] duration-500 active:bg-[#51600b]"
+						>Checkout</button
+					>
+				</div>
+			{:else}
+				<p class="mt-5 text-lg text-center">No products in the cart</p>
+			{/if}
+		</div>
+		<div class="w-[600px] fixed mt-10 flex bottom-10 justify-center">
+			<button
+				on:click={() => (cart = false)}
+				class=" p-3 duration-500 rounded-full hover:bg-[#829b15] bg-[#96B416] active:bg-[#4e5d0b]"
+			>
+				<svg
+					width="20px"
+					height="20px"
+					viewBox="-0.5 0 25 25"
+					fill="none"
+					xmlns="http://www.w3.org/2000/svg"
+					><g id="SVGRepo_bgCarrier" stroke-width="0" /><g
+						id="SVGRepo_tracerCarrier"
+						stroke-linecap="round"
+						stroke-linejoin="round"
+					/><g id="SVGRepo_iconCarrier">
+						<path
+							d="M3 21.32L21 3.32001"
+							stroke="#ffffff"
+							stroke-width="1.5"
+							stroke-linecap="round"
+							stroke-linejoin="round"
+						/>
+						<path
+							d="M3 3.32001L21 21.32"
+							stroke="#ffffff"
+							stroke-width="1.5"
+							stroke-linecap="round"
+							stroke-linejoin="round"
+						/>
+					</g></svg
+				>
+			</button>
+		</div>
 	</div>
 {/if}
 
@@ -83,7 +170,7 @@
 			>
 		</div>
 		<div class="flex items-center justify-center gap-7">
-			<button on:click={() => (cart = true)}>
+			<button>
 				<svg
 					width="23px"
 					height="23px"
@@ -105,7 +192,7 @@
 					</g></svg
 				>
 			</button>
-			<div>
+			<button on:click={() => (cart = true)}>
 				<svg
 					width="23px"
 					height="23px"
@@ -131,7 +218,7 @@
 						/>
 					</g></svg
 				>
-			</div>
+			</button>
 		</div>
 	</nav>
 
@@ -141,7 +228,7 @@
 		>
 			<Product
 				namaProduk="Ayam Geprek"
-				gambarProduk="makanan1.jpg"
+				gambarProduk="buah.png"
 				harga="Rp30.000"
 				kategori="Makanan"
 			/>
